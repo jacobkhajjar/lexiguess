@@ -1,0 +1,19 @@
+TO-DO
+[X] finish classify consonants
+[] finish classify_vowels
+[] handle homonyms
+[] handle not in dict
+[] handle splitting CLOTH/THOUGHT/NORTH/FORCE
+[] add lexical set search
+[] add word from shell input
+[] handle invalid input - same as not in dict? - no probably check against consonant list
+[] check if actions are accurate enough
+
+
+
+IDEAS
+[X] add fauxnetics config file
+[] add CLI / make look nice
+[] handle multiple words at once
+[] handle commA
+[] reorder consonant fx config
