@@ -4,7 +4,7 @@ fx_AA = "O" # LOT
 fx_AE = "A" # TRAP
 fx_AH = "UH" # STRUT
 fx_AO = "AW" # THOUGHT/CLOTH/NORTH/FORCE
-fx_AW = "OW" # MOUTH
+fx_AW = "AU" # MOUTH
 fx_AY = "AI" # PRICE
 
 fx_EH = "EH" # DRESS

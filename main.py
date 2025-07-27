@@ -2,43 +2,62 @@ import cmudict
 from objects.consonants import classify_consonant
 from objects.vowels import Vowel, vowel_list, classify_vowel
 
-word = "object"
-cmu = cmudict.dict()
+
 
 
 def main():
-    lexical_sets = set()
-    tokens = cmu[word]
+    entry = input("What word would you like to lexiguess?: ")
+    entry = entry.split()
+
+    word_count = len(entry)
     i = 0
+    
+    cmu = cmudict.dict()
 
-    print(f'lexiguessing "{word}"\n')
-
-#need to add cases for words not in dictionary and symbol not found
-
-    while i < len(tokens):
-        print(f"dictionary glyphs: {tokens[i]}")
+    while i < word_count:
+        word = entry[i]
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(f'\nLexiguessing "{word}" ({i + 1} of {word_count}):\n')
         
-        phones = []
+        try:
+            tokens = cmu[word]
+        except:
+            print(f'"{word}" not in CMU dictionary')
+            continue
 
-        for token in tokens[i]:
-            if token[0] in vowel_list:
-                token = classify_vowel(token)
-            else:
-                token = classify_consonant(token)
+        homonyms = 0
+
+        while homonyms < len(tokens):
+            print(f"CMU entry found: {tokens[homonyms]}\n")
+            
+            phones = []
+
+            for token in tokens[homonyms]:
+                if token[0] in vowel_list:
+                    new_phone = classify_vowel(token)
+                else:
+                    new_phone = classify_consonant(token)
+            
+                phones.append(new_phone)
+
+            transcription = ""
+            for phone in phones:
+                fauxnetic = phone.fx
+                if isinstance(phone, Vowel) and not phone.is_stressed:
+                    fauxnetic = fauxnetic.lower()
+                transcription += fauxnetic + " "
+                
+            print(f"fauxnetic transcription: {transcription}\n")
+            
+            if homonyms != len(tokens) - 1:
+                print("\n~~~ homonym found, running again ~~~\n")
+
+            homonyms += 1
         
-            phones.append(token)
-
-        transcription = ""
-        for phone in phones:
-            fauxnetic = phone.fx
-            if isinstance(phone, Vowel) and not phone.is_stressed:
-                fauxnetic = fauxnetic.lower()
-            transcription += fauxnetic + " "
-        print(f"fauxnetic transcription: {transcription}")
-        
-        if i != len(tokens) - 1:
-            print("\n~~~ homonym found, running again ~~~\n")
-
         i += 1
+    
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("\n Lexiguess complete!\n")
+    return
 
 main()
