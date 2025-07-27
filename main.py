@@ -35,7 +35,7 @@ def main():
         # loop for each homonym found in dict
         homonyms = 0
         while homonyms < len(tokens):
-            print(f"CMU entry found: {tokens[homonyms]}\n")
+            print(f"CMU entry found: {tokens[homonyms]}")
             
             # convert dict tokens into Phone objects
             phones = []
@@ -45,9 +45,7 @@ def main():
                 else:
                     new_phone = classify_consonant(token)
                 phones.append(new_phone)
-
-            # guess lexical sets
-            lexical_sets = guess_lexical_sets(word, phones)
+    
 
             # build fauxnetic transcription
             transcription = ""
@@ -56,7 +54,11 @@ def main():
                 if isinstance(phone, Vowel) and not phone.is_stressed:
                     fauxnetic = fauxnetic.lower() # unstressed vowels to lowercase
                 transcription += fauxnetic + " "
-            print(f"fauxnetic transcription (GenAm): {transcription.strip()}\n")
+            print(f"fauxnetic transcription (GenAm): {transcription.strip()}")
+
+            # guess lexical sets
+            lexical_sets = guess_lexical_sets(word, phones)
+            print(f"Best guess at lexical sets: {", ".join(lexical_sets)}\n")
             
             # check for homonyms
             if homonyms != len(tokens) - 1:

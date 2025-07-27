@@ -10,7 +10,7 @@ fx_AO = "AW" # THOUGHT/CLOTH/NORTH/FORCE
 fx_AW = "AU" # MOUTH
 fx_AY = "AI" # PRICE
 
-fx_EH = "EH" # DRESS
+fx_EH = "EH" # DRESS/SQUARE
 fx_ER = "ER" # NURSE/lettER
 fx_EY = "EY" # FACE
 
@@ -21,7 +21,7 @@ fx_OW = "OH" # GOAT
 fx_OY = "OI" # CHOICE
 
 fx_UH = "U" # FOOT/CURE
-fx_UW = "OO" # GOOSE
+fx_UW = "OO" # GOOSE/CURE
 
 # ~~CONSONANTS~~
 
