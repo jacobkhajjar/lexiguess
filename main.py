@@ -1,35 +1,35 @@
 import cmudict
-from objects.consonants import Consonant, Action, classify_consonant
+from objects.consonants import classify_consonant
 from objects.vowels import Vowel, vowel_list, classify_vowel
 
-word = "it"
+word = "enough"
 cmu = cmudict.dict()
 
 
 def main():
-    tokens = []
+    phones = []
     lexical_sets = set()
-    phones = cmu[word]
+    tokens = cmu[word]
 
     print(f'lexiguessing "{word}"')
-    print(f"dictionary glyphs: {phones}")
+    print(f"dictionary glyphs: {tokens}")
 
-#need to add cases for homonyms and words not in dictionary
+#need to add cases for homonyms and words not in dictionary and symbol not found
 
-    for phone in phones[1]:
-        if phone[0] in vowel_list:
-            token = classify_vowel(phone)
+    for token in tokens[0]:
+        if token[0] in vowel_list:
+            token = classify_vowel(token)
         else:
-            token = classify_consonant(phone)
+            token = classify_consonant(token)
         
-        tokens.append(token)
+        phones.append(token)
 
     transcription = ""
-    for token in tokens:
-        glyphs = token.glyphs
-        if isinstance(token, Vowel) and not token.is_stressed:
-            glyphs = glyphs.lower()
-        transcription += glyphs + " "
+    for phone in phones:
+        fauxnetic = phone.fx
+        if isinstance(phone, Vowel) and not phone.is_stressed:
+            fauxnetic = fauxnetic.lower()
+        transcription += fauxnetic + " "
     print(f"fauxnetic transcription: {transcription}")
 
 main()

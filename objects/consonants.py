@@ -1,6 +1,6 @@
 from enum import Enum
 from objects.phones import Phone
-import config.fauxnetics
+from config.fauxnetics import *
 
 class Action(Enum):
     STOP = 1
@@ -11,61 +11,61 @@ class Action(Enum):
     SEMIVOWEL = 6
 
 class Consonant(Phone):
-    def __init__(self, glyphs: str, is_voiced: bool, action: Action):
-        super().__init__(glyphs)
+    def __init__(self, fx: str, is_voiced: bool, action: Action):
+        super().__init__(fx)
         self.is_voiced = is_voiced
         self.action = action
 
-def classify_consonant(phone):
-    match phone:
+def classify_consonant(token):
+    match token:
 
         case "B":
             consonant = Consonant(fx_B, True, Action.STOP)
         case "CH":
             consonant = Consonant(fx_CH, False, Action.AFFRICATE)
         case "D":
-            consonant = Consonant("d", True, Action.STOP)
+            consonant = Consonant(fx_D, True, Action.STOP)
         case "DH":
-            consonant = Consonant("th(v)", True, Action.FRICATIVE)
+            consonant = Consonant(fx_DH, True, Action.FRICATIVE)
         case "F":
-            consonant = Consonant("f", False, Action.FRICATIVE)
+            consonant = Consonant(fx_F, False, Action.FRICATIVE)
         case "G":
-            consonant = Consonant("g", True, Action.STOP)
+            consonant = Consonant(fx_G, True, Action.STOP)
         case "HH":
-            consonant = Consonant("h", False, Action.FRICATIVE)
+            consonant = Consonant(fx_HH, False, Action.FRICATIVE)
         case "JH":
-            consonant = Consonant("j", True, Action.AFFRICATE)
+            consonant = Consonant(fx_JH, True, Action.AFFRICATE)
         case "K":
-            consonant = Consonant("k", False, Action.STOP)
+            consonant = Consonant(fx_K, False, Action.STOP)
         case "L":
-            consonant = Consonant("l", True, Action.LIQUID)
+            consonant = Consonant(fx_L, True, Action.LIQUID)
         case "M":
-            consonant = Consonant("m", True, Action.NASAL)
+            consonant = Consonant(fx_M, True, Action.NASAL)
         case "N":
-            consonant = Consonant("n", True, Action.NASAL)
+            consonant = Consonant(fx_N, True, Action.NASAL)
         case "NG":
-            consonant = Consonant("ng", True, Action.NASAL)
+            consonant = Consonant(fx_NG, True, Action.NASAL)
         case "P":
-            consonant = Consonant("p", False, Action.STOP)
+            consonant = Consonant(fx_P, False, Action.STOP)
         case "R":
-            consonant = Consonant("r", True, Action.LIQUID)
+            consonant = Consonant(fx_R, True, Action.LIQUID)
         case "S":
-            consonant = Consonant("s", False, Action.FRICATIVE)
+            consonant = Consonant(fx_S, False, Action.FRICATIVE)
         case "SH":
-            consonant = Consonant("sh", False, Action.FRICATIVE)
+            consonant = Consonant(fx_SH, False, Action.FRICATIVE)
         case "T":
-            consonant = Consonant("t", False, Action.STOP)
+            consonant = Consonant(fx_T, False, Action.STOP)
         case "TH":
-            consonant = Consonant("th(uv)", False, Action.FRICATIVE)
+            consonant = Consonant(fx_TH, False, Action.FRICATIVE)
         case "V":
-            consonant = Consonant("v", True, Action.FRICATIVE)
+            consonant = Consonant(fx_V, True, Action.FRICATIVE)
         case "W":
-            consonant = Consonant("w", True, Action.SEMIVOWEL)
+            consonant = Consonant(fx_W, True, Action.SEMIVOWEL)
         case "Y":
-            consonant = Consonant("y", True, Action.SEMIVOWEL)
+            consonant = Consonant(fx_Y, True, Action.SEMIVOWEL)
         case "Z":
-            consonant = Consonant("z", True, Action.FRICATIVE)
+            consonant = Consonant(fx_Z, True, Action.FRICATIVE)
         case "ZH":
-            consonant = Consonant("zh", True, Action.FRICATIVE)
+            consonant = Consonant(fx_ZH, True, Action.FRICATIVE)
    
     return consonant
