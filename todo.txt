@@ -1,7 +1,7 @@
 TO-DO
 [X] finish classify consonants
 [X] finish classify_vowels
-[] handle homonyms
+[X] handle homonyms
 [] handle not in dict
 [] handle splitting CLOTH/THOUGHT/NORTH/FORCE
 [] add lexical set search
