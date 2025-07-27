@@ -1,7 +1,10 @@
+# Translates the ARPAbet characters from the CMU into (fx_ value) into
+# easier to read "fauxnetics" which are configuarble below 
+
 # ~~VOWELS~~
 
-fx_AA = "O" # LOT
-fx_AE = "A" # TRAP
+fx_AA = "AA" # LOT/START/PALM
+fx_AE = "A" # TRAP/BATH
 fx_AH = "UH" # STRUT
 fx_AO = "AW" # THOUGHT/CLOTH/NORTH/FORCE
 fx_AW = "AU" # MOUTH
@@ -12,12 +15,12 @@ fx_ER = "ER" # NURSE/lettER
 fx_EY = "EY" # FACE
 
 fx_IH = "IH" # KIT
-fx_IY = "EE" # FLEECE/happY
+fx_IY = "EE" # FLEECE/happY/NEAR
 
 fx_OW = "OH" # GOAT
 fx_OY = "OI" # CHOICE
 
-fx_UH = "U" # FOOT
+fx_UH = "U" # FOOT/CURE
 fx_UW = "OO" # GOOSE
 
 # ~~CONSONANTS~~

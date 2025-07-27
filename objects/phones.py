@@ -1,6 +1,7 @@
 class Phone:
-    def __init__(self, fx: str):
-        self.fx = fx
+    def __init__(self, arpa: str, fx: str):
+        self.arpa = arpa # symbol from CMU
+        self.fx = fx # fauxnetic from config
 
     def __str__(self):
         return self.fx
