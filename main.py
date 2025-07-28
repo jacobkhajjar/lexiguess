@@ -1,4 +1,4 @@
-import cmudict
+import json
 
 from objects.consonants import classify_consonant
 from objects.vowels import Vowel, vowel_list, classify_vowel
@@ -14,7 +14,8 @@ def main():
     i = 0
     
     # define dict
-    cmu = cmudict.dict()
+    with open("dictionaries/us.json", "r" , encoding="utf-8") as f:
+        lookup = json.load(f)
 
     # loop for each word in entry
     while i < word_count:
@@ -26,7 +27,7 @@ def main():
         
         # check if word is in dict
         try:
-            tokens = cmu[word]
+            tokens = lookup[word]
         except:
             print(f'"{word}" not in CMU dictionary')
             i += 1
