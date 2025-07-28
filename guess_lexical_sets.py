@@ -2,6 +2,7 @@ from objects.consonants import Consonant, Action
 from objects.vowels import Vowel
 
 def guess_lexical_sets(word, phones):
+
     lexical_sets = set()
     
     # loop over each phone
@@ -13,6 +14,7 @@ def guess_lexical_sets(word, phones):
         else:
             continue
 
+        # define previous / first
         if i == 0:
             previous = None
             first = True
@@ -20,6 +22,7 @@ def guess_lexical_sets(word, phones):
             previous = phones[i - 1]
             first = False
 
+        # define next / last
         if i < len(phones) - 1:
             next = phones[i + 1]
             last = False
@@ -31,9 +34,12 @@ def guess_lexical_sets(word, phones):
         # begin logic based on CMU ARPA
         match vowel.arpa:
             
-            # LOT/START/PALM - need logic to split
+            # LOT/START/PALM - need logic to split LOT/PALM
             case "AA":
-                lexical_sets.add("LOT/START/PALM")
+                if next and next.arpa == "R":
+                    lexical_sets.add("START")
+                else:
+                    lexical_sets.add("LOT/PALM")
             
             # TRAP/BATH - need logic to split
             case "AE":
@@ -78,7 +84,7 @@ def guess_lexical_sets(word, phones):
             case "EY":
                 lexical_sets.add("FACE")
 
-            # KIT / NEAR - assumes assumes NEAR is never stressed and KIT + R is always NEAR
+            # KIT / NEAR - assumes assumes NEAR is never unstressed and KIT + R is always NEAR
             case "IH":
                 if vowel.is_stressed:
                     if next and next.arpa == "R":
@@ -88,7 +94,7 @@ def guess_lexical_sets(word, phones):
                 else:
                     lexical_sets.add("commA (kit)")
 
-            # FLEECE / happY / commA / NEAR - assumes NEAR is never stressed and FLEECE + R is always NEAR
+            # FLEECE / happY / commA / NEAR - assumes NEAR is never unstressed and FLEECE + R is always NEAR
             case "IY":
                 if not vowel.is_stressed:
                     if first:

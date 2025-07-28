@@ -6,7 +6,7 @@ from guess_lexical_sets import guess_lexical_sets
 
 def main():
     # user entry
-    entry = input("What word would you like to lexiguess?: ")
+    entry = input("What word would you like to lexiguess?: ").lower()
     entry = entry.split()
 
     # define counters
@@ -46,15 +46,14 @@ def main():
                     new_phone = classify_consonant(token)
                 phones.append(new_phone)
     
-
             # build fauxnetic transcription
             transcription = ""
             for phone in phones:
                 fauxnetic = phone.fx
                 if isinstance(phone, Vowel) and not phone.is_stressed:
                     fauxnetic = fauxnetic.lower() # unstressed vowels to lowercase
-                transcription += fauxnetic + " "
-            print(f"fauxnetic transcription (GenAm): {transcription.strip()}")
+                transcription += fauxnetic + "."
+            print(f"fauxnetic transcription (GenAm): {transcription.strip(".")}")
 
             # guess lexical sets
             lexical_sets = guess_lexical_sets(word, phones)
@@ -70,7 +69,7 @@ def main():
     
     # footer
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print("\n Lexiguess complete!\n")
+    print("\nLexiguess complete!\n")
     
     return
 
