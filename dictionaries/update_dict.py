@@ -1,3 +1,5 @@
+# run this file if you have edited a "pretty" dictionary and would like to apply these updates to the JSON file for use in other functions
+
 import json
 
 def main():
