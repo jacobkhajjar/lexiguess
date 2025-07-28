@@ -31,5 +31,5 @@
 [] sets to enums?
 [] sets in order?
 [] optional flags for transcriptions, dictionary etc.
-[] create conversion function for IPA and ARAPbet
+[] create conversion function for IPA and ARPabet
 [] add ipa field to phones
