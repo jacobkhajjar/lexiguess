@@ -1,4 +1,5 @@
 import json
+import re
 from objects.consonants import Consonant, Action
 from objects.vowels import Vowel
 
@@ -13,13 +14,8 @@ def guess_lexical_sets(word, phones):
         else:
             continue
 
-        # define previous / first
-        if i == 0:
-            previous = None
-            first = True
-        else:
-            previous = phones[i - 1]
-            first = False
+        # define first
+        first = (i == 0)
 
         # define next / last
         if i < len(phones) - 1:
@@ -42,7 +38,7 @@ def guess_lexical_sets(word, phones):
                 elif not isinstance(next, Consonant):
                     vowel.lexical_set = "PALM"
                 else:
-                    vowel.lexical_set = check_uk_dict(word, phones, vowel, previous, next, last, first) # type: ignore
+                    vowel.lexical_set = check_uk_dict(word, phones, vowel, next) # type: ignore
             
             # TRAP/BATH - COMPLETE
             case "AE":
@@ -51,7 +47,7 @@ def guess_lexical_sets(word, phones):
                 if next and isinstance(next, Consonant):
                     possible_bath = False
                     if next.action == Action.FRICATIVE:
-                        if not next.is_voiced or next.arpa in ["DH", "V", "Z"]:
+                        if not next.is_voiced or next.arpa in ("DH", "V", "Z"):
                             possible_bath = True
                     elif next.action == Action.NASAL:
                         possible_bath = True
@@ -60,7 +56,7 @@ def guess_lexical_sets(word, phones):
 
                     # if could be BATH, check MFA dict
                     if possible_bath:
-                        vowel.lexical_set = check_uk_dict(word, phones, vowel, previous, next, last, first) # type: ignore
+                        vowel.lexical_set = check_uk_dict(word, phones, vowel, next) # type: ignore
                     else:
                         vowel.lexical_set = "TRAP"
 
@@ -84,9 +80,31 @@ def guess_lexical_sets(word, phones):
                 else:
                     vowel.lexical_set = "commA/STRUT"
             
-            # THOUGHT/CLOTH/NORTH/FORCE - need logic to split
+            # THOUGHT/CLOTH/NORTH/FORCE -
             case "AO":
-                vowel.lexical_set = "THOUGHT/CLOTH/NORTH/FORCE"
+                if next and isinstance(next, Consonant):
+                    if word == "chocolate":
+                        vowel.lexical_set = "CLOTH"
+                    if next.arpa == "NG":
+                        vowel.lexical_set = "CLOTH"
+                    elif next.action == Action.FRICATIVE and next.is_voiced:
+                        vowel.lexical_set = "THOUGHT"
+                    elif next.action in (Action.STOP, Action.AFFRICATE) and next.arpa != "G":
+                        vowel.lexical_set = "THOUGHT"
+                    elif next.arpa in ("L", "W"):
+                        vowel.lexical_set = "THOUGHT"
+
+                # check MFA dict
+                vowel.lexical_set = check_uk_dict(word, phones, vowel, next) # type: ignore
+                
+                # try spelling rules if not in MFA dict
+                if vowel.lexical_set == "not in dict":
+                    if next and next.arpa == "R":
+                        if phones[i + 2] and isinstance(phones[i + 2], Vowel) and not phones[i + 2].is_stressed:
+                            vowel.lexical_set = "CLOTH"
+                        else:
+                            vowel.lexical_set = north_or_force(word, phones, vowel, next) # type: ignore
+
 
             # MOUTH - COMPLETE
             case "AW":
@@ -166,7 +184,7 @@ def guess_lexical_sets(word, phones):
                 else:
                     vowel.lexical_set = "commA/GOOSE"
 
-def check_uk_dict(word, phones, vowel, previous, next, last, first):
+def check_uk_dict(word, phones, vowel, next):
     print(f"\nUK dictionary needed to split GenAm merger...")
 
     lexical_set = ""
@@ -186,7 +204,7 @@ def check_uk_dict(word, phones, vowel, previous, next, last, first):
         # split base on GenAm ARPA
         match vowel.arpa:
 
-            # Split LOT/PALM
+            # split LOT/PALM
             case "AA":
                 if lexical_set == "ambiguous":
                     return "ambiguous LOT or PALM"
@@ -204,6 +222,7 @@ def check_uk_dict(word, phones, vowel, previous, next, last, first):
                 else:
                     return "ambiguous LOT or PALM"
                 
+            # split TRAP/BATH
             case "AE":
                 if lexical_set == "ambiguous":
                     return "ambiguous TRAP or BATH"
@@ -217,6 +236,47 @@ def check_uk_dict(word, phones, vowel, previous, next, last, first):
                     return lexical_set
                 else:
                     return "ambiguous TRAP or BATH"
-
-
-                        
+                
+            case "AO":
+                if lexical_set == "ambiguous":
+                    return "not in dict" # tries more spelling logic
+                
+                    # split THOUGHT/CLOTH/NORTH/FORCE
+                for transcription in transcriptions:
+                    if "AO" in transcription and "OX" not in transcription:
+                        if next and next.arpa == "R":
+                            return north_or_force(word, phones, vowel, next)
+                        return "THOUGHT"
+                    elif "OX" in transcription and "AO" not in transcription:
+                        return "CLOTH"
+                    elif next and next.arpa != "R":
+                        return "ambiguous THOUGHT or CLOTH"
+                    else:
+                        return "ambiguous THOUGHT or CLOTH or NORTH or FORCE"
+                    
+def north_or_force(word, phones, vowel, next):
+    
+    # check if vowel is word final
+    if phones[-2] and phones[-2].arpa == vowel.arpa:
+        if word.endswith(("ore", "oar", "oor", "our")):
+            return "FORCE"
+        if word.endswith(("or", "ar")):
+            return "NORTH"
+        
+    
+    # check for prevocalic spellings
+    if re.search(r"(aur)[aeiouy]", word):
+        return "NORTH"
+    if re.search(r"(or|oar)[aeiouy]", word):
+        return "FORCE"
+    
+    # check for impossible FORCE spellings
+    if word in ("pork", "forge", "proportion"):
+        return "FORCE"
+    if next and next.arpa in (
+        "P", "B", "K", "JH", "M", "DH", "F", "V", "Z", "L", "SH", "ZH"
+    ):
+        return "NORTH"
+    
+    else:
+        return "ambiguous NORTH or FORCE"

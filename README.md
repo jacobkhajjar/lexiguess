@@ -12,7 +12,7 @@ It is worth noting that this program is only a best estimate of the lexical sets
 
 ### Lexiguess Usage
 
-Run main.py from the /Dialex. It will request an input which should be a list of one or more words separated by whitespace (space). These words will be searched first in the CMU pronunciation dictionary and secondly, if necessary, in the MFA RP dictionary to return the estimated lexical sets of each word. Homonyms in the dictionary will be detected and all homonyms of each word will be outputted. Optionally the program can also provide a transcription in the International Phonetic Alphabet (IPA), ARPAbet, or in configurable "fauxnetics" which are set by default to a General American bias.
+Run main.py from /Dialex. It will request an input which should be a list of one or more words separated by whitespace (space). These words will be searched first in the CMU pronunciation dictionary and secondly, if necessary, in the MFA RP dictionary to return the estimated lexical sets of each word. Homonyms in the dictionary will be detected and all homonyms of each word will be outputted. Optionally the program can also provide a transcription in the International Phonetic Alphabet (IPA), ARPAbet, or in configurable "fauxnetics" which are set by default to a General American bias.
 
 ## Config Options
 
