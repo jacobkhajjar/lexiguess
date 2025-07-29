@@ -7,15 +7,15 @@
 [X] handle invalid input - same as not in dict? - no probably check against consonant list
 [X] add lexical set search
 [] handle splitting CLOTH/THOUGHT/NORTH/FORCE
-[-] handle splitting LOT/START/PALM - START complete
+[X] handle splitting LOT/START/PALM
 [] handle splitting TRAP/BATH - add TRAM?
 [X] handle SQUARE/NEAR/CURE
-[] compare LOT/START with UK dict
 [] compare CLOTH/THOUGHT/NORTH/FORCE with UK dict
 [] implement spelling rules for NORTH/FORCE
 [] check if actions are accurate enough
-[] readme
-[] add credits to readme
+[X] readme
+[X] add credits to readme
+[] override dict
 
 
 

@@ -1,9 +1,8 @@
+import json
 from objects.consonants import Consonant, Action
 from objects.vowels import Vowel
 
 def guess_lexical_sets(word, phones):
-
-    lexical_sets = set()
     
     # loop over each phone
     for i, phone in enumerate(phones):
@@ -33,106 +32,142 @@ def guess_lexical_sets(word, phones):
 
         # begin logic based on CMU ARPA
         match vowel.arpa:
-            
-            # LOT/START/PALM - need logic to split LOT/PALM
+    
+    # LOT/START/PALM - COMPLETE - can split based on MFA dict but LOT/PALM often ambiguous
             case "AA":
                 if next and next.arpa == "R":
-                    lexical_sets.add("START")
+                    vowel.lexical_set = "START"
+                elif last:
+                    vowel.lexical_set = "PALM"
+                elif not isinstance(next, Consonant):
+                    vowel.lexical_set = "PALM"
                 else:
-                    lexical_sets.add("LOT/PALM")
+                    vowel.lexical_set = check_uk_dict(word, phones, vowel, previous, next, last, first) # type: ignore
             
             # TRAP/BATH - need logic to split
             case "AE":
-                lexical_sets.add("TRAP/BATH")
+                vowel.lexical_set = "TRAP/BATH"
 
             # STRUT - COMPLETE
             case "AH":
                 if vowel.is_stressed:
-                    lexical_sets.add("STRUT")
+                    vowel.lexical_set = "STRUT"
                 else:
-                    lexical_sets.add("commA (strut)")
+                    vowel.lexical_set = "commA (strut)"
             
             # THOUGHT/CLOTH/NORTH/FORCE - need logic to split
             case "AO":
-                lexical_sets.add("THOUGHT/CLOTH/NORTH/FORCE")
+                vowel.lexical_set = "THOUGHT/CLOTH/NORTH/FORCE"
 
             # MOUTH - COMPLETE
             case "AW":
-                lexical_sets.add("MOUTH")
+                vowel.lexical_set = "MOUTH"
 
             # PRICE - COMPLETE
             case "AY":
-                lexical_sets.add("PRICE")
+                vowel.lexical_set = "PRICE"
 
             # DRESS - assumes DRESS + R is always SQUARE?
             case "EH":
                 if next and next.arpa == "R":
-                    lexical_sets.add("SQUARE")
+                    vowel.lexical_set = "SQUARE"
                 elif vowel.is_stressed:
-                    lexical_sets.add("DRESS")
+                    vowel.lexical_set = "DRESS"
                 else:
-                    lexical_sets.add("commA (dress)")
+                    vowel.lexical_set = "commA (dress)"
             
             # NURSE/LETTER - COMPLETE
             case "ER":
                 if vowel.is_stressed:
-                    lexical_sets.add("NURSE")
+                    vowel.lexical_set = "NURSE"
                 else:
-                    lexical_sets.add("lettER")
+                    vowel.lexical_set = "lettER"
 
             # FACE - COMPLETE
             case "EY":
-                lexical_sets.add("FACE")
+                vowel.lexical_set = "FACE"
 
-            # KIT / NEAR - assumes assumes NEAR is never unstressed and KIT + R is always NEAR
+            # KIT / NEAR - assumes NEAR is never unstressed and KIT + R is always NEAR
             case "IH":
                 if vowel.is_stressed:
                     if next and next.arpa == "R":
-                        lexical_sets.add("NEAR")
+                        vowel.lexical_set = "NEAR"
                     else:
-                        lexical_sets.add("KIT")
+                        vowel.lexical_set = "KIT"
                 else:
-                    lexical_sets.add("commA (kit)")
+                    vowel.lexical_set = "commA (kit)"
 
             # FLEECE / happY / commA / NEAR - assumes NEAR is never unstressed and FLEECE + R is always NEAR
             case "IY":
                 if not vowel.is_stressed:
                     if first:
-                        lexical_sets.add("commA (fleece)")
+                        vowel.lexical_set = "commA (fleece)"
                     else:
-                        lexical_sets.add("happY")
+                        vowel.lexical_set = "happY"
                 elif next and next.arpa == "R":
-                    lexical_sets.add("NEAR")
+                    vowel.lexical_set = "NEAR"
                 else:
-                    lexical_sets.add("FLEECE")
+                    vowel.lexical_set = "FLEECE"
             
             # GOAT/GOAL - COMPLETE
             case "OW":
                 if next and next.arpa == "L":
-                    lexical_sets.add("GOAL (goat)")
+                    vowel.lexical_set = "GOAL (goat)"
                 else:
-                    lexical_sets.add("GOAT")
+                    vowel.lexical_set = "GOAT"
 
             # CHOICE - COMPLETE
             case "OY":
-                lexical_sets.add("CHOICE")
+                vowel.lexical_set = "CHOICE"
 
             # FOOT/CURE - assumes FOOT + R is always CURE
             case "UH":
                 if next and next.arpa == "R":
-                    lexical_sets.add("CURE")
+                    vowel.lexical_set = "CURE"
                 elif vowel.is_stressed:
-                    lexical_sets.add("FOOT")
+                    vowel.lexical_set = "FOOT"
                 else:
-                    lexical_sets.add("commA (foot)")
+                    vowel.lexical_set = "commA (foot)"
 
             # GOOSE/CURE - assumes GOOSE + R is always CURE
             case "UW":
                 if next and next.arpa == "R":
-                    lexical_sets.add("CURE")
+                    vowel.lexical_set = "CURE"
                 elif vowel.is_stressed:
-                    lexical_sets.add("GOOSE")
+                    vowel.lexical_set = "GOOSE"
                 else:
-                    lexical_sets.add("commA (goose)")
+                    vowel.lexical_set = "commA (goose)"
             
-    return lexical_sets
+    return vowel.lexical_set
+
+def check_uk_dict(word, phones, vowel, previous, next, last, first):
+    
+    # Split sets that are merged in GenAM, accessing MFA RP dictionary
+    with open("dictionaries/uk.json", "r" , encoding="utf-8") as f:
+        lookup = json.load(f)
+        transcriptions = lookup[word]
+        lexical_set = ""
+
+        print(f"\nUK dictionary needed to split GenAm merger...")
+        print(f"MFA entry found: {transcriptions}\n")
+        
+        match vowel.arpa:
+
+            # Split LOT/PALM
+            case "AA":
+                for transcription in transcriptions:
+                    if "ɒ" in transcription and "ɑ" not in transcription:
+                        if lexical_set == "LOT":
+                            continue
+                        lexical_set += "LOT"
+                    elif "ɑ" in transcription and "ɒ" not in transcription:
+                        if lexical_set == "PALM":
+                            continue
+                        lexical_set += "PALM"
+                if lexical_set == "PALM" or lexical_set == "LOT":
+                    return lexical_set
+                else:
+                    return "ambiguous LOT or PALM"
+
+
+                        

@@ -46,18 +46,28 @@ def main():
                 else:
                     new_phone = classify_consonant(token)
                 phones.append(new_phone)
-    
-            # build fauxnetic transcription
+
+            # guess lexical sets
+            guess_lexical_sets(word, phones)
+            
+            lexical_sets = []
             transcription = ""
+            
+            # loop through each phone for final analysis
             for phone in phones:
+
+                # build lexical set list
+                if isinstance(phone, Vowel) and phone.lexical_set not in lexical_sets:
+                    lexical_sets.append(phone.lexical_set)
+
+                # build fauxnetic transcription
                 fauxnetic = phone.fx
                 if isinstance(phone, Vowel) and not phone.is_stressed:
                     fauxnetic = fauxnetic.lower() # unstressed vowels to lowercase
                 transcription += fauxnetic + "."
+            
+            # print phone iteration results
             print(f"fauxnetic transcription (GenAm): {transcription.strip(".")}")
-
-            # guess lexical sets
-            lexical_sets = guess_lexical_sets(word, phones)
             print(f"Best guess at lexical sets: {", ".join(lexical_sets)}\n")
             
             # check for homonyms
