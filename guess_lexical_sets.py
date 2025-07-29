@@ -73,7 +73,7 @@ def guess_lexical_sets(word, phones, verbose):
                 if next.action == Action.NASAL:
                     if vowel.lexical_set == "TRAP":
                         vowel.lexical_set += "/TRAM"
-                    if vowel.lexical_set == "BATH":
+                    elif vowel.lexical_set == "BATH":
                         vowel.lexical_set += "/DANCE"
                     else:
                         vowel.lexical_set = "ambiguous TRAP/TRAM or BATH/DANCE"
