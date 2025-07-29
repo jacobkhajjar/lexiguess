@@ -83,7 +83,7 @@ def main():
             if verbose:
                 print(f"Best guess at lexical sets: {", ".join(lexical_sets)}\n")
             else:
-                print(f"\n{word}: {", ".join(lexical_sets)}")
+                print(f"{word}: {", ".join(lexical_sets)}")
             if do_fx:
                 print(f"fauxnetic transcription (GenAm): {transcription.strip(".")}")
             

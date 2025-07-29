@@ -39,6 +39,12 @@ def guess_lexical_sets(word, phones, verbose):
                     vowel.lexical_set = "PALM"
                 else:
                     vowel.lexical_set = check_uk_dict(word, phones, vowel, next, verbose) # type: ignore
+                
+                if vowel.lexical_set == "ambiguous LOT or PALM":
+                    if re.search(r"ot|otch", word):
+                        vowel.lexical_set = "LOT"
+                    elif re.search(r"al", word):
+                        vowel.lexical_set = "PALM"
             
             # TRAP/BATH - COMPLETE
             case "AE":
@@ -104,6 +110,14 @@ def guess_lexical_sets(word, phones, verbose):
                             vowel.lexical_set = "CLOTH"
                         else:
                             vowel.lexical_set = north_or_force(word, phones, vowel, next) # type: ignore
+                    elif next and next.arpa in ("L", "W", "M", "SH", "K"):
+                        vowel.lexical_set = "THOUGHT"
+                    elif next and isinstance(next, Consonant) and next.action == Action.FRICATIVE and next.is_voiced:
+                        vowel.lexical_set = "THOUGHT"
+                    elif re.search(r"(au)[bcdfghjklmnpqstvwxz]", word) or re.search(r"(ough|al|aw)", word):
+                        vowel.lexical_set = "THOUGHT"
+                    else:
+                        vowel.lexical_set = "ambiguous THOUGHT or CLOTH"
 
 
             # MOUTH - COMPLETE
