@@ -44,16 +44,45 @@ def guess_lexical_sets(word, phones):
                 else:
                     vowel.lexical_set = check_uk_dict(word, phones, vowel, previous, next, last, first) # type: ignore
             
-            # TRAP/BATH - need logic to split
+            # TRAP/BATH - COMPLETE
             case "AE":
-                vowel.lexical_set = "TRAP/BATH"
+
+                # check if BATH is possible in spelling
+                if next and isinstance(next, Consonant):
+                    possible_bath = False
+                    if next.action == Action.FRICATIVE:
+                        if not next.is_voiced or next.arpa in ["DH", "V", "Z"]:
+                            possible_bath = True
+                    elif next.action == Action.NASAL:
+                        possible_bath = True
+                    elif next.arpa == "L":
+                        possible_bath = True
+
+                    # if could be BATH, check MFA dict
+                    if possible_bath:
+                        vowel.lexical_set = check_uk_dict(word, phones, vowel, previous, next, last, first) # type: ignore
+                    else:
+                        vowel.lexical_set = "TRAP"
+
+                else:
+                    raise Exception("expected consonant after AE vowel")
+                
+                # check for TRAM/DANCE
+                if next.action == Action.NASAL:
+                    if vowel.lexical_set == "TRAP":
+                        vowel.lexical_set += "/TRAM"
+                    if vowel.lexical_set == "BATH":
+                        vowel.lexical_set += "/DANCE"
+                    else:
+                        vowel.lexical_set = "ambiguous TRAP/TRAM or BATH/DANCE"
+
 
             # STRUT - COMPLETE
             case "AH":
                 if vowel.is_stressed:
                     vowel.lexical_set = "STRUT"
                 else:
-                    vowel.lexical_set = "commA (strut)"
+                    vowel.lexical_set = "commA/STRUT"
             
             # THOUGHT/CLOTH/NORTH/FORCE - need logic to split
             case "AO":
@@ -74,7 +103,7 @@ def guess_lexical_sets(word, phones):
                 elif vowel.is_stressed:
                     vowel.lexical_set = "DRESS"
                 else:
-                    vowel.lexical_set = "commA (dress)"
+                    vowel.lexical_set = "commA/DRESS"
             
             # NURSE/LETTER - COMPLETE
             case "ER":
@@ -95,13 +124,13 @@ def guess_lexical_sets(word, phones):
                     else:
                         vowel.lexical_set = "KIT"
                 else:
-                    vowel.lexical_set = "commA (kit)"
+                    vowel.lexical_set = "commA/KIT"
 
             # FLEECE / happY / commA / NEAR - assumes NEAR is never unstressed and FLEECE + R is always NEAR
             case "IY":
                 if not vowel.is_stressed:
                     if first:
-                        vowel.lexical_set = "commA (fleece)"
+                        vowel.lexical_set = "commA/FLEECE"
                     else:
                         vowel.lexical_set = "happY"
                 elif next and next.arpa == "R":
@@ -111,10 +140,9 @@ def guess_lexical_sets(word, phones):
             
             # GOAT/GOAL - COMPLETE
             case "OW":
+                vowel.lexical_set = "GOAT"
                 if next and next.arpa == "L":
-                    vowel.lexical_set = "GOAL (goat)"
-                else:
-                    vowel.lexical_set = "GOAT"
+                    vowel.lexical_set += "/GOAL"
 
             # CHOICE - COMPLETE
             case "OY":
@@ -127,7 +155,7 @@ def guess_lexical_sets(word, phones):
                 elif vowel.is_stressed:
                     vowel.lexical_set = "FOOT"
                 else:
-                    vowel.lexical_set = "commA (foot)"
+                    vowel.lexical_set = "commA/FOOT"
 
             # GOOSE/CURE - assumes GOOSE + R is always CURE
             case "UW":
@@ -136,31 +164,38 @@ def guess_lexical_sets(word, phones):
                 elif vowel.is_stressed:
                     vowel.lexical_set = "GOOSE"
                 else:
-                    vowel.lexical_set = "commA (goose)"
-            
-    return vowel.lexical_set
+                    vowel.lexical_set = "commA/GOOSE"
 
 def check_uk_dict(word, phones, vowel, previous, next, last, first):
+    print(f"\nUK dictionary needed to split GenAm merger...")
+
+    lexical_set = ""
     
     # Split sets that are merged in GenAM, accessing MFA RP dictionary
     with open("dictionaries/uk.json", "r" , encoding="utf-8") as f:
         lookup = json.load(f)
-        transcriptions = lookup[word]
-        lexical_set = ""
-
-        print(f"\nUK dictionary needed to split GenAm merger...")
-        print(f"MFA entry found: {transcriptions}\n")
         
+        # check if word is in MFA dictionary
+        try:
+            transcriptions = lookup[word]
+            print(f"MFA entry found: {transcriptions}\n")
+        except KeyError:
+            lexical_set = "ambiguous"
+            print(f"{word} not in MFA dictionary")
+        
+        # split base on GenAm ARPA
         match vowel.arpa:
 
             # Split LOT/PALM
             case "AA":
+                if lexical_set == "ambiguous":
+                    return "ambiguous LOT or PALM"
                 for transcription in transcriptions:
-                    if "ɒ" in transcription and "ɑ" not in transcription:
+                    if "OX" in transcription and "AA" not in transcription:
                         if lexical_set == "LOT":
                             continue
                         lexical_set += "LOT"
-                    elif "ɑ" in transcription and "ɒ" not in transcription:
+                    elif "AA" in transcription and "OX" not in transcription:
                         if lexical_set == "PALM":
                             continue
                         lexical_set += "PALM"
@@ -168,6 +203,20 @@ def check_uk_dict(word, phones, vowel, previous, next, last, first):
                     return lexical_set
                 else:
                     return "ambiguous LOT or PALM"
+                
+            case "AE":
+                if lexical_set == "ambiguous":
+                    return "ambiguous TRAP or BATH"
+                for transcription in transcriptions:
+                    if "AE" in transcription and "AA" not in transcription:
+                        lexical_set = "TRAP"
+                        continue
+                    elif "AA" in transcription and "AE" not in transcription:
+                        return "BATH"
+                if lexical_set == "TRAP":
+                    return lexical_set
+                else:
+                    return "ambiguous TRAP or BATH"
 
 
                         

@@ -8,7 +8,7 @@
 [X] add lexical set search
 [] handle splitting CLOTH/THOUGHT/NORTH/FORCE
 [X] handle splitting LOT/START/PALM
-[] handle splitting TRAP/BATH - add TRAM?
+[X] handle splitting TRAP/BATH - add TRAM?
 [X] handle SQUARE/NEAR/CURE
 [] compare CLOTH/THOUGHT/NORTH/FORCE with UK dict
 [] implement spelling rules for NORTH/FORCE
@@ -29,7 +29,8 @@
 [] guess words not in dict
 [] redefine fauxnetics based on lexical set
 [] sets to enums?
-[] sets in order?
+[X] sets in order?
 [] optional flags for transcriptions, dictionary etc.
-[] create conversion function for IPA and ARPabet
+[X] create conversion function for IPA and ARPabet
 [] add ipa field to phones
+[] replace uk logic with difflib

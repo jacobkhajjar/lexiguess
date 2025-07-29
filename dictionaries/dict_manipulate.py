@@ -30,8 +30,11 @@ def dict_replace():
     with open(source, "r", encoding="utf-8") as f:
         with open("dict_replace_results.txt", "w", encoding="utf-8") as g:
             for line in f:
-                new_line = line.replace(search, replacement)
-                g.write(new_line)
+                parts = line.strip().split(maxsplit=1)
+                word = parts[0]
+                transcription = parts[1]
+                new_line = transcription.replace(search, replacement)
+                g.write(f"{word} {new_line}\n")
 
 if f_or_r == "f":
     print(f"Finding {search} in {source}...")

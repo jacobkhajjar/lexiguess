@@ -3,12 +3,12 @@ from objects.phones import Phone
 from config.fx import *
 
 class Action(Enum):
-    STOP = 1
-    FRICATIVE = 2
-    NASAL = 3
-    AFFRICATE = 4
-    LIQUID = 5
-    SEMIVOWEL = 6
+    STOP = "stop-plosive"
+    FRICATIVE = "fricative"
+    NASAL = "nasal"
+    AFFRICATE = "affricate"
+    LIQUID = "liquid approximant"
+    SEMIVOWEL = "semivowel approximant"
 
 unvoiced = ["CH", "F", "HH", "K", "P", "S", "SH", "T", "TH"]
 
