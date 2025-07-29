@@ -3,7 +3,7 @@ import re
 from objects.consonants import Consonant, Action
 from objects.vowels import Vowel
 
-def guess_lexical_sets(word, phones):
+def guess_lexical_sets(word, phones, verbose):
     
     # loop over each phone
     for i, phone in enumerate(phones):
@@ -38,7 +38,7 @@ def guess_lexical_sets(word, phones):
                 elif not isinstance(next, Consonant):
                     vowel.lexical_set = "PALM"
                 else:
-                    vowel.lexical_set = check_uk_dict(word, phones, vowel, next) # type: ignore
+                    vowel.lexical_set = check_uk_dict(word, phones, vowel, next, verbose) # type: ignore
             
             # TRAP/BATH - COMPLETE
             case "AE":
@@ -56,7 +56,7 @@ def guess_lexical_sets(word, phones):
 
                     # if could be BATH, check MFA dict
                     if possible_bath:
-                        vowel.lexical_set = check_uk_dict(word, phones, vowel, next) # type: ignore
+                        vowel.lexical_set = check_uk_dict(word, phones, vowel, next, verbose) # type: ignore
                     else:
                         vowel.lexical_set = "TRAP"
 
@@ -95,12 +95,12 @@ def guess_lexical_sets(word, phones):
                         vowel.lexical_set = "THOUGHT"
 
                 # check MFA dict
-                vowel.lexical_set = check_uk_dict(word, phones, vowel, next) # type: ignore
+                vowel.lexical_set = check_uk_dict(word, phones, vowel, next, verbose) # type: ignore
                 
                 # try spelling rules if not in MFA dict
                 if vowel.lexical_set == "not in dict":
                     if next and next.arpa == "R":
-                        if phones[i + 2] and isinstance(phones[i + 2], Vowel) and not phones[i + 2].is_stressed:
+                        if (i + 2) < len(phones) and isinstance(phones[i + 2], Vowel) and not phones[i + 2].is_stressed:
                             vowel.lexical_set = "CLOTH"
                         else:
                             vowel.lexical_set = north_or_force(word, phones, vowel, next) # type: ignore
@@ -184,8 +184,9 @@ def guess_lexical_sets(word, phones):
                 else:
                     vowel.lexical_set = "commA/GOOSE"
 
-def check_uk_dict(word, phones, vowel, next):
-    print(f"\nUK dictionary needed to split GenAm merger...")
+def check_uk_dict(word, phones, vowel, next, verbose):
+    if verbose:
+        print(f"UK dictionary needed to split GenAm merger...\n")
 
     lexical_set = ""
     
@@ -196,10 +197,12 @@ def check_uk_dict(word, phones, vowel, next):
         # check if word is in MFA dictionary
         try:
             transcriptions = lookup[word]
-            print(f"MFA entry found: {transcriptions}\n")
+            if verbose:
+                print(f"MFA entry found: {transcriptions}\n")
         except KeyError:
             lexical_set = "ambiguous"
-            print(f"{word} not in MFA dictionary")
+            if verbose:
+                print(f"{word} not in MFA dictionary\n")
         
         # split base on GenAm ARPA
         match vowel.arpa:

@@ -15,7 +15,7 @@
 [X] check if actions are accurate enough
 [X] readme
 [X] add credits to readme
-[] optional flags for transcriptions, dictionary etc.
+[X] optional flags for transcriptions, dictionary etc.
 
 ~~ IDEAS ~~
 [X] add fauxnetics config file
