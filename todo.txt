@@ -16,6 +16,7 @@
 [X] readme
 [X] add credits to readme
 [X] optional flags for transcriptions, dictionary etc.
+[X] fix duplicate override homonym bug
 
 ~~ IDEAS ~~
 [X] add fauxnetics config file
@@ -30,4 +31,5 @@
 [X] create conversion function for IPA and ARPabet
 [] add ipa field to phones
 [] replace uk logic with difflib
-[] override dict
+[X] override dict
+[] allow lexiguess to add to override dict

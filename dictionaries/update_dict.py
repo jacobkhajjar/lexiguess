@@ -3,23 +3,27 @@
 import json
 
 def main():
-    response = input('Which dictionary would you like to update?\n(Enter "US" or "UK"): ').lower()
+    response = input('Which dictionary would you like to update?\n(Enter "US", "UK" or "LS"): ').lower()
     if response == "us":
-        old_dict = "dictionaries/pretty/us.dict"
+        pretty = "dictionaries/pretty/us.dict"
         dest = "dictionaries/us.json"
     elif response == "uk":
-        old_dict = "dictionaries/pretty/uk.dict"
+        pretty = "dictionaries/pretty/uk.dict"
         dest = "dictionaries/uk.json"
+    elif response == "ls":
+        pretty = "dictionaries/pretty/ls.dict"
+        dest = "dictionaries/ls.json"
+
     else:
-        raise ValueError('Invalid input. Valid options are "US" or "UK"')
+        raise ValueError('Invalid input. Valid options are "US", "UK" or "LS"')
     
-    new_dict = dict_convert(old_dict)
+    new_dict = dict_convert(pretty)
 
     update_dict(new_dict, dest)
 
-def dict_convert(old_dict):
+def dict_convert(pretty):
     new_dict = {}
-    with open(old_dict) as f:
+    with open(pretty) as f:
         for line in f:
             transcription = line.split()
             word = transcription[0]
@@ -32,5 +36,6 @@ def dict_convert(old_dict):
 def update_dict(new_dict, dest):
     with open(dest, "w", encoding="utf-8") as f:
         json.dump(new_dict, f, ensure_ascii=False)
+    print(f"{dest} updated!")
 
 main()

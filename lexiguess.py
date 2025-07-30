@@ -34,8 +34,23 @@ def main():
         if verbose:
             print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print(f'\nLexiguessing "{word}" ({i + 1} of {word_count}):\n')
+
+        lexical_sets = []
+        override = False
         
-        # check if word is in dict
+        # check if word is in Lexical Set (LS) dict
+        
+        if not override:
+            with open("dictionaries/ls.json", "r") as f:
+                ls_dict = json.load(f)
+                if word in ls_dict:
+                    override = True
+                    if verbose:
+                        print("LS entry found, overriding other dictionaries.\n")
+                    for sets in ls_dict[word]:
+                        lexical_sets.append(f"{word}: {", ".join(sets)}")
+        
+        # check if word is in CMU dict
         try:
             tokens = lookup[word]
         except:
@@ -59,17 +74,18 @@ def main():
                 phones.append(new_phone)
 
             # guess lexical sets
-            guess_lexical_sets(word, phones, verbose)
+            if not override:
+                guess_lexical_sets(word, phones, verbose)
             
-            lexical_sets = []
             transcription = ""
             
             # loop through each phone for final analysis
             for phone in phones:
 
                 # build lexical set list
-                if isinstance(phone, Vowel) and phone.lexical_set not in lexical_sets:
-                    lexical_sets.append(phone.lexical_set)
+                if not override:
+                    if isinstance(phone, Vowel) and phone.lexical_set not in lexical_sets:
+                        lexical_sets.append(phone.lexical_set)
 
                 # build fauxnetic transcription if -fx
                 if do_fx:
@@ -80,10 +96,12 @@ def main():
             
             
             # print results
-            if verbose:
-                print(f"Best guess at lexical sets: {", ".join(lexical_sets)}\n")
-            else:
-                print(f"{word}: {", ".join(lexical_sets)}")
+            if not override:
+                if verbose:
+                    print(f"Best guess at lexical sets: {", ".join(lexical_sets)}\n")
+                else:
+                    print(f"{word}: {", ".join(lexical_sets)}")
+
             if do_fx:
                 print(f"fauxnetic transcription (GenAm): {transcription.strip(".")}")
             
@@ -95,6 +113,11 @@ def main():
         
         # increment to check for next word
         i += 1
+    
+    if override:
+        if verbose:
+            print("Lexical sets in LS dictionary:")
+        print("\n".join(lexical_sets))
     
     # footer
     if verbose:

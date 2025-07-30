@@ -1,0 +1,32 @@
+lot LOT
+start START
+palm PALM
+trap TRAP
+bath BATH
+dance BATH/DANCE
+tram BATH/TRAM
+strut STRUT
+comma commA
+cloth CLOTH
+chocolate CLOTH commA/STRUT
+thought THOUGHT
+north NORTH
+force FORCE
+mouth MOUTH
+price PRICE
+dress DRESS
+nurse NURSE
+letter DRESS lettER
+face FACE
+kit KIT
+near NEAR
+fleece FLEECE
+happY TRAP happY
+goat GOAT
+goal GOAT/GOAL
+choice CHOICE
+foot FOOT
+cure CURE
+goose GOOSE
+object comma/STRUT DRESS
+object LOT DRESS
