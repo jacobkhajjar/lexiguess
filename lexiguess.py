@@ -1,9 +1,9 @@
 import argparse
 import json
 
-from objects.consonants import classify_consonant
-from objects.vowels import Vowel, vowel_list, classify_vowel
+from objects.vowels import Vowel
 from guess_lexical_sets import guess_lexical_sets
+from build_phone import build_phone
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output')
@@ -67,10 +67,7 @@ def main():
             # convert dict tokens into Phone objects
             phones = []
             for token in tokens[homonyms]:
-                if token[0] in vowel_list:
-                    new_phone = classify_vowel(token)
-                else:
-                    new_phone = classify_consonant(token)
+                new_phone = build_phone(token)
                 phones.append(new_phone)
 
             # guess lexical sets

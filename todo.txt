@@ -30,6 +30,6 @@
 [X] sets in order?
 [X] create conversion function for IPA and ARPabet
 [] add ipa field to phones
-[] replace uk logic with difflib
+[] replace uk logic with difflib and g2p mapping
 [X] override dict
 [] allow lexiguess to add to override dict
